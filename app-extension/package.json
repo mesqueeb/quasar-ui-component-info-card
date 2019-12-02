@@ -1,0 +1,22 @@
+{
+  "name": "quasar-app-extension-component-info-card",
+  "version": "0.0.1",
+  "description": "An info card to support examples of Vue components.",
+  "author": "Luca Ban - Mesqueeb",
+  "license": "MIT",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mesqueeb/quasar-ui-component-info-card"
+  },
+  "bugs": "https://github.com/mesqueeb/quasar-ui-component-info-card/issues",
+  "homepage": "https://github.com/mesqueeb/quasar-ui-component-info-card",
+  "dependencies": {
+    "quasar-ui-component-info-card": "latest"
+  },
+  "engines": {
+    "node": ">= 8.9.0",
+    "npm": ">= 5.6.0",
+    "yarn": ">= 1.6.0"
+  }
+}
