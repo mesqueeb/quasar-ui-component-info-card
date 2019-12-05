@@ -76,6 +76,7 @@
         </q-tab-panel>
         <q-tab-panel class="q-pa-none _props-panel" name="Props">
           <TabsPanelProps
+            :tag-name="tagName"
             :value="propData"
             @input="val => $emit('update:prop-data', val)"
             :props-schema="propsSchema"

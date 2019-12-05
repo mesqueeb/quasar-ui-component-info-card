@@ -46,7 +46,7 @@
           >
             <div class="flex">
               <div class="_box" style="background: white"></div>
-              <div class="_legend q-pl-xs">EasyField prop</div>
+              <div class="_legend q-pl-xs">{{ tagName }} prop</div>
             </div>
             <div class="flex">
               <div class="_box inherited-prop-modified"></div>
@@ -132,6 +132,7 @@ export default {
     EasyForm,
   },
   props: {
+    tagName: String,
     value: Object,
     propsSchema: [Array, Object],
   },
