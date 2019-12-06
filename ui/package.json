@@ -1,12 +1,13 @@
 {
   "name": "quasar-ui-component-info-card",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Luca Ban - Mesqueeb",
   "description": "An info card to support examples of Vue components.",
   "license": "MIT",
   "module": "dist/index.esm.js",
   "main": "dist/index.common.js",
   "scripts": {
+    "deploy": "npm run build && npm publish && cd ../app-extension && npm publish",
     "dev": "cd dev; yarn dev; cd ..",
     "dev:umd": "yarn build && node build/script.open-umd.js",
     "dev:ssr": "cd dev; yarn 'dev:ssr'; cd ..",
