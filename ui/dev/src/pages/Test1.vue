@@ -1,9 +1,21 @@
 <template>
-  <q-page padding>
+  <q-page padding class="q-gutter-xl">
     <InfoCard
       :propData.sync="propData"
       :propsSchema="propsSchema"
-      :propsSeparateTab="[]"
+      :propsSeparateTab="['Schema']"
+      :styleClasses="['.easy-component-yo']"
+      :styleClassesData="{}"
+      tagName="EasyComponentYo"
+      title="Basic Example"
+    >
+      <q-btn v-bind="propData" label="Touch me" />
+    </InfoCard>
+    <InfoCard
+      :propData.sync="propData"
+      :propsSchema="propsSchema"
+      :propsSeparateTab="['Schema']"
+      :staticSchemaTab="staticSchemaTab"
       :styleClasses="['.easy-component-yo']"
       :styleClassesData="{}"
       tagName="EasyComponentYo"
@@ -23,9 +35,6 @@
 <script>
 export default {
   data () {
-    const propData = {
-      loading: false,
-    }
     const propsSchema = [
       {
         id: 'loading',
@@ -34,9 +43,47 @@ export default {
         label: 'Loading',
         subLabel: 'When `true` it will show a loading state!',
         hasMarkdown: true,
-      }
+      },
+      {
+        id: 'label',
+        fieldType: 'input',
+        category: 'content',
+        label: 'Label',
+        subLabel: 'An external label above the element.',
+        hasMarkdown: true,
+      },
     ]
-    return { propData, propsSchema }
+    const staticSchemaTab = `export default [
+  {
+    id: 'loading',
+    fieldType: 'toggle',
+    category: 'state',
+    label: 'Loading',
+    subLabel: 'When \`true\` it will show a loading state!',
+    hasMarkdown: true,
+  },
+  {
+    id: 'label',
+    fieldType: 'input',
+    category: 'content',
+    label: 'Label',
+    subLabel: 'An external label above the element.',
+    hasMarkdown: true,
+  },
+]`
+    const propData = {
+      value: {
+        hello: 1,
+      },
+      loading: false,
+      otherProp: { data: () => [].map(Boolean) },
+      otherProp2: () => [].map(Boolean),
+      otherProp3 () {
+        return [].map(Boolean)
+      },
+      label: (val, { formDataNested }) => (formDataNested.clicked ? 'Nice!' : ''),
+    }
+    return { propData, propsSchema, staticSchemaTab }
   },
 }
 </script>

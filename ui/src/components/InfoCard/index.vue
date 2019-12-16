@@ -27,12 +27,7 @@
             narrow-indicator
             no-caps
           >
-            <q-tab
-              v-for="tab in tabs"
-              :key="tab"
-              :name="tab"
-              :label="tab"
-            />
+            <q-tab v-for="tab in tabs" :key="tab" :name="tab" :label="tab" />
           </q-tabs>
 
           <q-separator />
@@ -46,7 +41,7 @@
             >
               <TabsPanelVariables
                 v-if="tab === 'Schema' && propsSeparateTab.length"
-                :var-data-print-ready="schemaDataPrintReady"
+                :var-data-print-ready="varDataPrintReady"
               />
               <TabsPanelTemplate
                 v-if="tab === 'Template'"
@@ -54,6 +49,7 @@
                 :var-name-props="varNameProps"
                 :var-name-value="varNameValue"
                 :prop-data-print-ready="propDataPrintReady"
+                :var-data-print-ready="varDataPrintReady"
               />
               <TabsPanelScript
                 v-if="tab === 'Script'"
@@ -62,6 +58,7 @@
                 :var-name-value="varNameValue"
                 :props-separate-tab="propsSeparateTab"
                 :prop-data-print-ready="propDataPrintReady"
+                :var-data-print-ready="varDataPrintReady"
                 :value-print-ready="valuePrintReady"
               />
               <TabsPanelStyle
@@ -98,7 +95,6 @@
   ._source-code-panel
     .q-markdown pre
       margin-bottom: 0 !important
-
 </style>
 
 <script>
@@ -118,6 +114,7 @@ import {
   QTooltip,
 } from 'quasar'
 import { camelCase } from 'case-anything'
+import { isFullString } from 'is-what'
 import parseCodeForPrint from '../../helpers/parseCodeForPrint.js'
 import InfoCardTitle from './InfoCardTitle.vue'
 import TabsPanelVariables from './TabsPanelVariables.vue'
@@ -158,8 +155,17 @@ export default {
       type: String,
     },
     propData: {
-      desc: 'The object with the selected values per interactive prop: `{[propKey]: selectedValue}`',
+      desc:
+        'The object with the selected values per interactive prop: `{[propKey]: selectedValue}`',
       type: Object,
+    },
+    staticSchemaTab: {
+      desc: 'If passed, the Schema tab will not live update & just use the string passed here.',
+      type: String,
+    },
+    staticScriptTab: {
+      desc: 'If passed, the Script tab will not live update & just use the string passed here.',
+      type: String,
     },
     propsSchema: {
       desc: 'The EasyForm schema to generate the prop info.',
@@ -167,25 +173,29 @@ export default {
       default: () => [],
     },
     propsSeparateTab: {
-      desc: 'An array with prop names. These props will not be shown in the script-tab, but will be shown in a separate tab as variables. Usefull for "big" objects etc.',
+      desc:
+        'An array with prop names. These props will not be shown in the script-tab, but will be shown in a separate tab as variables. Usefull for "big" objects etc.',
       type: Array,
-      default: () => ([]),
+      default: () => [],
     },
     styleClasses: {
       type: Array,
-      desc: 'An array of classes to show in the textarea. These classes will be targeted in the dom to apply the custom css typed in the textarea.',
-      default: () => ([]),
+      desc:
+        'An array of classes to show in the textarea. These classes will be targeted in the dom to apply the custom css typed in the textarea.',
+      default: () => [],
     },
     styleClassesData: {
       type: Object,
-      desc: 'An object with classes as keys and an object as value that has the default styles to add to this class',
+      desc:
+        'An object with classes as keys and an object as value that has the default styles to add to this class',
       default: () => ({}),
     },
   },
   data () {
-    const tabs = !this.propsSeparateTab.length
-      ? ['Template', 'Script', 'Style']
-      : ['Schema', 'Template', 'Script', 'Style']
+    const tabs =
+      !this.propsSeparateTab.length || (this.staticSchemaTab && !this.staticScriptTab)
+        ? ['Script', 'Template', 'Style']
+        : ['Schema', 'Script', 'Template', 'Style']
     return {
       isExpanded: false,
       tabControl: tabs[0],
@@ -194,31 +204,37 @@ export default {
     }
   },
   computed: {
-    varNameProps () { return `${camelCase(this.tagName)}Props` },
-    varNameValue () { return `${camelCase(this.tagName)}Value` },
-    valuePrintReady () { return parseCodeForPrint(this.propData.value) },
-    propDataPrintReady () {
-      const { propData, propsSeparateTab } = this
-      return Object.entries(propData)
-        .reduce((carry, [propKey, propValue]) => {
-          if (propValue === undefined || propValue === '' || propKey === 'value') {
-            return carry
-          }
-          if (propsSeparateTab.includes(propKey)) {
-            carry[propKey] = propKey
-            return carry
-          }
-          carry[propKey] = parseCodeForPrint(propValue)
-          return carry
-        }, {})
+    varNameProps () {
+      return `${camelCase(this.tagName)}Props`
     },
-    schemaDataPrintReady () {
-      const { propData, propsSeparateTab } = this
-      return propsSeparateTab
-        .reduce((carry, propKey) => {
-          carry[propKey] = parseCodeForPrint(propData[propKey])
+    varNameValue () {
+      return `${camelCase(this.tagName)}Value`
+    },
+    valuePrintReady () {
+      return parseCodeForPrint(this.propData.value)
+    },
+    varDataPrintReady () {
+      const { propData, propsSeparateTab, staticSchemaTab, varNameProps } = this
+      if (isFullString(staticSchemaTab)) return staticSchemaTab
+      return propsSeparateTab.reduce((carry, propKey) => {
+        carry[propKey] = parseCodeForPrint(propData[propKey])
+        return carry
+      }, {})
+    },
+    propDataPrintReady () {
+      const { propData, propsSeparateTab, staticScriptTab } = this
+      if (isFullString(staticScriptTab)) return staticScriptTab
+      return Object.entries(propData).reduce((carry, [propKey, propValue]) => {
+        if (propValue === undefined || propValue === '' || propKey === 'value') {
           return carry
-        }, {})
+        }
+        if (propsSeparateTab.includes(propKey)) {
+          carry[propKey] = propKey
+          return carry
+        }
+        carry[propKey] = parseCodeForPrint(propValue)
+        return carry
+      }, {})
     },
   },
   methods: {
