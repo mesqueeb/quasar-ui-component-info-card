@@ -1,9 +1,5 @@
 <template>
-  <q-splitter
-    v-model="splitterModel"
-    style="height: 400px"
-    class="tabs-panel-props"
-  >
+  <q-splitter v-model="splitterModel" style="height: 400px" class="tabs-panel-props">
     <template v-slot:before>
       <q-tabs
         v-model="tabControl"
@@ -50,7 +46,9 @@
             </div>
             <div class="flex">
               <div class="_box inherited-prop-modified"></div>
-              <div class="_legend q-pl-xs">inherited prop (from the wrapped component - with modified behavior)</div>
+              <div class="_legend q-pl-xs">
+                inherited prop (from the wrapped component - with modified behavior)
+              </div>
             </div>
             <div class="flex">
               <div class="_box inherited-prop"></div>
@@ -88,10 +86,13 @@
     width: 30px
     height: 20px
   .easy-field
-    grid-template-areas: "label sub-label" "label field"
     grid-template-columns: 150px 1fr
     grid-gap: 6px
     padding: 1em
+  .easy-field__sub-label
+    grid-column: 2 / 3
+  .easy-field__component
+    grid-column: 2 / 3
   .easy-field__label
     background: $accent
     color: white
@@ -102,18 +103,10 @@
     margin-bottom: 4px
   .q-markdown p
     margin: 0 !important
-
 </style>
 
 <script>
-import {
-  QBadge,
-  QSplitter,
-  QTab,
-  QTabPanel,
-  QTabPanels,
-  QTabs,
-} from 'quasar'
+import { QBadge, QSplitter, QTab, QTabPanel, QTabPanels, QTabs } from 'quasar'
 import { EasyForm } from 'quasar-ui-easy-forms'
 import { isArray } from 'is-what'
 import copy from 'copy-anything'
@@ -145,7 +138,7 @@ export default {
   computed: {
     schemaPerCategory () {
       const { propsSchema } = this
-      const schema = (!isArray(propsSchema)) ? Object.values(propsSchema) : propsSchema
+      const schema = !isArray(propsSchema) ? Object.values(propsSchema) : propsSchema
       const perCat = schema.reduce((carry, blueprint) => {
         const { category, inheritedProp, fieldClasses } = blueprint
         // If it's an inheritedProp, add a specific indentifier
@@ -155,21 +148,24 @@ export default {
         if (!category) return carry
         const categoryArray = category.split('|')
         categoryArray.forEach(c => {
-          if (!carry[c]) carry[c] = {schema: [], name: c}
+          if (!carry[c]) carry[c] = { schema: [], name: c }
           blueprint.sortFieldsOnInheritedOrNot = inheritedProp
           carry[c].schema.push(blueprint)
         })
         return carry
       }, {})
-      Object.entries(perCat).forEach(([catKey, {schema}]) => {
-        perCat[catKey].schema = sort(schema).by(['sortFieldsOnInheritedOrNot', 'desc'], ['label', 'asc'])
+      Object.entries(perCat).forEach(([catKey, { schema }]) => {
+        perCat[catKey].schema = sort(schema).by(
+          ['sortFieldsOnInheritedOrNot', 'desc'],
+          ['label', 'asc']
+        )
       })
       return perCat
     },
   },
   methods: {
     pascalCase,
-    updateSettings ({id, value}) {
+    updateSettings ({ id, value }) {
       const settings = copy(this.value)
       settings[id] = value
       this.$emit('input', settings)

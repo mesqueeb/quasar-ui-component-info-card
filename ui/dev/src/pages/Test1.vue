@@ -38,7 +38,7 @@ export default {
     const propsSchema = [
       {
         id: 'loading',
-        fieldType: 'toggle',
+        component: 'QToggle',
         category: 'state',
         label: 'Loading',
         subLabel: 'When `true` it will show a loading state!',
@@ -46,7 +46,7 @@ export default {
       },
       {
         id: 'label',
-        fieldType: 'input',
+        component: 'QInput',
         category: 'content',
         label: 'Label',
         subLabel: 'An external label above the element.',
@@ -56,7 +56,7 @@ export default {
     const staticSchemaTab = `export default [
   {
     id: 'loading',
-    fieldType: 'toggle',
+    component: 'QToggle',
     category: 'state',
     label: 'Loading',
     subLabel: 'When \`true\` it will show a loading state!',
@@ -64,7 +64,7 @@ export default {
   },
   {
     id: 'label',
-    fieldType: 'input',
+    component: 'QInput',
     category: 'content',
     label: 'Label',
     subLabel: 'An external label above the element.',
