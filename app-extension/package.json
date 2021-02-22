@@ -1,6 +1,6 @@
 {
   "name": "quasar-app-extension-component-info-card",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "An info card to support examples of Vue components.",
   "author": "Luca Ban - Mesqueeb",
   "license": "MIT",
