@@ -46,7 +46,7 @@
     "copy-anything": "^1.5.1",
     "is-what": "^3.5.0",
     "quasar-ui-easy-forms": "^1.2.4",
-    "serialize-javascript": "^2.1.2",
+    "serialize-javascript": "^3.1.0",
     "sort-anything": "^0.1.0"
   }
 }
